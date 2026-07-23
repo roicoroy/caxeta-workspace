@@ -1,10 +1,7 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "namedInputs": {
-    "default": [
-      "{projectRoot}/**/*",
-      "sharedGlobals"
-    ],
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
       "default",
       "!{projectRoot}/.eslintrc.json",
@@ -29,23 +26,37 @@
       "options": {
         "targetName": "test"
       },
-      "exclude": [
-        "apps/api-e2e/**/*"
-      ]
+      "exclude": ["apps/api-e2e/**/*"]
+    },
+    {
+      "plugin": "@nx/vite/plugin",
+      "options": {
+        "buildTargetName": "build",
+        "serveTargetName": "serve",
+        "devTargetName": "dev",
+        "previewTargetName": "preview",
+        "serveStaticTargetName": "serve-static",
+        "typecheckTargetName": "typecheck",
+        "buildDepsTargetName": "build-deps",
+        "watchDepsTargetName": "watch-deps"
+      }
     }
   ],
   "targetDefaults": {
     "@nx/js:tsc": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "production",
-        "^production"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["production", "^production"]
     }
   },
   "nxCloudId": "6a627e63e4492d83dc53a504",
-  "analytics": true
+  "analytics": true,
+  "generators": {
+    "@nx/web:application": {
+      "style": "css",
+      "linter": "none",
+      "unitTestRunner": "none",
+      "e2eTestRunner": "none"
+    }
+  }
 }

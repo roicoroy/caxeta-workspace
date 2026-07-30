@@ -141,31 +141,49 @@ export class MeldValidator {
 
         // 2. Look at remaining cards for pairs / partial sequences
         const remainingCards = cards.filter(c => !bestCombination.includes(c));
-        const partialCards = new Set<Card>();
+        let partialScore = 0;
+        const counted = new Set<Card>();
 
         for (let i = 0; i < remainingCards.length; i++) {
             for (let j = i + 1; j < remainingCards.length; j++) {
                 const c1 = remainingCards[i];
                 const c2 = remainingCards[j];
 
-                // Check pair (same value, diff suit)
+                // Pair toward Trinca: same value, DIFFERENT suit (can become a 3-suit Trinca)
                 if (c1.value === c2.value && c1.suit !== c2.suit) {
-                    partialCards.add(c1);
-                    partialCards.add(c2);
+                    if (!counted.has(c1)) { partialScore += 40; counted.add(c1); }
+                    if (!counted.has(c2)) { partialScore += 40; counted.add(c2); }
                 }
 
-                // Check partial sequence (same suit, diff 1 or 2)
-                if (c1.suit === c2.suit) {
+                // Partial sequence: same suit, consecutive or gap-of-1
+                if (c1.suit === c2.suit && c1.value !== c2.value) {
                     const diff = Math.abs(c1.value - c2.value);
-                    if (diff === 1 || diff === 2 || (c1.value === 1 && c2.value === 13) || (c1.value === 13 && c2.value === 1)) {
-                        partialCards.add(c1);
-                        partialCards.add(c2);
+                    const isAceKing = (c1.value === 1 && c2.value === 13) || (c1.value === 13 && c2.value === 1);
+
+                    if (diff === 1 || isAceKing) {
+                        // Consecutive: strong partial (one card away from a run)
+                        if (!counted.has(c1)) { partialScore += 35; counted.add(c1); }
+                        if (!counted.has(c2)) { partialScore += 35; counted.add(c2); }
+                    } else if (diff === 2) {
+                        // Gap of 1: weaker partial (needs a specific middle card)
+                        if (!counted.has(c1)) { partialScore += 15; counted.add(c1); }
+                        if (!counted.has(c2)) { partialScore += 15; counted.add(c2); }
                     }
                 }
+
+                // Same value, SAME suit (duplicate from 2nd deck): worth nothing for Trinca
+                // Intentionally not scored — these are dead weight
             }
         }
 
-        score += partialCards.size * 10;
+        // 3. Penalize isolated cards (deadwood) — cards with no relation to any partial or meld
+        for (const card of remainingCards) {
+            if (!counted.has(card)) {
+                partialScore -= 15; // deadwood penalty
+            }
+        }
+
+        score += partialScore;
         return score;
     }
 

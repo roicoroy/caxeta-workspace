@@ -54,10 +54,10 @@ export class Game extends Scene {
                     this.children.bringToTop(topCardSprite); // ensure it renders on top
                     topCardSprite.setInteractive({ cursor: 'pointer' });
                     this.input.setDraggable(topCardSprite, true);
-                    
+
                     topCardSprite.setData('isNewDraw', true);
                     this.playerHand.setFloatingCard(topCardSprite);
-                    
+
                     const centerX = this.scale.gameSize.width / 2;
                     const centerY = this.scale.gameSize.height / 2;
 
@@ -263,7 +263,7 @@ export class Game extends Scene {
                 gameObject.x = this.discardPile.x;
                 gameObject.y = this.discardPile.y;
                 gameObject.angle = Math.random() * 20 - 10;
-                
+
                 this.startTurn('bot');
 
             } else {
@@ -375,12 +375,12 @@ export class Game extends Scene {
     public discardBotCard(card: Phaser.GameObjects.Image) {
         this.botHand.removeCard(card);
         this.discardedSprites.push(card);
-        
+
         card.setTexture('cards', (card.getData('cardData') as Card).getTextureName()); // flip face up
         card.disableInteractive();
-        
+
         this.children.bringToTop(card);
-        
+
         this.tweens.add({
             targets: card,
             x: this.discardPile.x,
@@ -398,11 +398,11 @@ export class Game extends Scene {
     public discardBotCardForWin(card: Phaser.GameObjects.Image) {
         this.botHand.removeCard(card);
         this.discardedSprites.push(card);
-        
+
         card.setTexture('cards', (card.getData('cardData') as Card).getTextureName());
         card.disableInteractive();
         this.children.bringToTop(card);
-        
+
         this.tweens.add({
             targets: card,
             x: this.discardPile.x,
@@ -412,20 +412,20 @@ export class Game extends Scene {
             duration: 350
         });
     }
-    
-    public triggerBotWin(isPife: boolean = false) {
+
+    public triggerBotWin(isPife = false) {
         if (isPife) {
             this.gameUI.showMessage('BOT PIFE!\nYou lost!\n(-2 Pts for you)', '#ff0000');
         } else {
             this.gameUI.showMessage('BOT BATEU!\nYou lost!\n(-1 Pt for you)', '#ff0000');
         }
-        
+
         try {
             // Group the bot's cards
             const botCards = this.botHand.getCards();
             const cardDataList = botCards.map(c => c.getData('cardData') as Card);
             const orderedCardData = MeldValidator.getBestMeldGrouping(cardDataList);
-            
+
             // Reorder the sprites safely
             botCards.sort((a, b) => {
                 const dataA = a.getData('cardData');
@@ -441,7 +441,7 @@ export class Game extends Scene {
                 const cd = c.getData('cardData');
                 if (cd) c.setTexture('cards', (cd as Card).getTextureName());
             });
-            
+
             this.botHand.rearrange();
         } catch (e) {
             console.error("Error during bot win grouping:", e);

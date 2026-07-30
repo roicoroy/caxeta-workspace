@@ -1,44 +1,42 @@
-import * as Phaser from 'phaser';
+import { Boot } from './game/scenes/Boot';
+import { GameOver } from './game/scenes/GameOver';
+import { Game as MainGame } from './game/scenes/Game';
+import { MainMenu } from './game/scenes/MainMenu';
+import { Options } from './game/scenes/Options';
+import { AUTO, Game, Scale } from 'phaser';
+import { Preloader } from './game/scenes/Preloader';
 
-class DemoScene extends Phaser.Scene {
-  constructor() {
-    super('DemoScene');
-  }
-
-  preload() {
-    this.load.image('logo', 'https://labs.phaser.io/assets/sprites/phaser3-logo.png');
-    this.load.image('red', 'https://labs.phaser.io/assets/particles/red.png');
-  }
-
-  create() {
-    const particles = this.add.particles(0, 0, 'red', {
-      speed: 100,
-      scale: { start: 1, end: 0 },
-      blendMode: 'ADD'
-    });
-
-    const logo = this.physics.add.image(400, 100, 'logo');
-
-    logo.setVelocity(100, 200);
-    logo.setBounce(1, 1);
-    logo.setCollideWorldBounds(true);
-
-    particles.startFollow(logo);
-  }
-}
-
-const config: Phaser.Types.Core.GameConfig = {
-  type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  parent: 'game-container',
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: { x: 0, y: 200 }
-    }
-  },
-  scene: DemoScene
+export const GAME_CONFIG = {
+    isDevelopment: true,
+    showStartPage: true
 };
 
-const game = new Phaser.Game(config);
+//  Find out more information about the Game Config at:
+//  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
+const config: Phaser.Types.Core.GameConfig = {
+    type: AUTO,
+    width: 1024,
+    height: 768,
+    parent: 'game-container',
+    backgroundColor: '#028af8',
+    scale: {
+        mode: Scale.RESIZE,
+        autoCenter: Scale.CENTER_BOTH
+    },
+    scene: [
+        Boot,
+        Preloader,
+        MainMenu,
+        Options,
+        MainGame,
+        GameOver
+    ]
+};
+
+const StartGame = (parent: string) => {
+    return new Game({ ...config, parent });
+}
+
+export default StartGame;
+
+const game = StartGame('game-container');

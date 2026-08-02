@@ -1,0 +1,21 @@
+diff --git a/src/executors/build/executor.js b/src/executors/build/executor.js
+index 0d6652c7cc21f68376942d72d1385a406a977a24..246d1cca770a73a47dd0215f6e9925e85f1ce8b9 100644
+--- a/src/executors/build/executor.js
++++ b/src/executors/build/executor.js
+@@ -13,15 +13,11 @@ const normalize_1 = require("../../utils/normalize");
+ const workspace_1 = require("../../utils/workspace");
+ const config_1 = require("../../utils/config");
+ const js_1 = require("@nx/js");
+-const buildable_libs_utils_1 = require("@nx/js/src/utils/buildable-libs-utils");
++// Removed buildable-libs-utils for Nx 23 compatibility
+ function executor(rawOptions, context) {
+     const { sourceRoot, projectRoot } = (0, workspace_1.getSourceRoot)(context);
+     const normalizedOptions = (0, normalize_1.normalizeBuildOptions)(rawOptions, context.root, sourceRoot, projectRoot);
+     const projGraph = context.projectGraph;
+-    if (!normalizedOptions.buildLibsFromSource) {
+-        const { target, dependencies } = (0, buildable_libs_utils_1.calculateProjectDependencies)(projGraph, context.root, context.projectName, context.targetName, context.configurationName);
+-        normalizedOptions.tsConfig = (0, buildable_libs_utils_1.createTmpTsConfig)(normalizedOptions.tsConfig, context.root, target.data.root, dependencies);
+-    }
+     if (normalizedOptions.generatePackageJson) {
+         const packageJsonContent = (0, js_1.createPackageJson)(context.projectName, projGraph, Object.assign(Object.assign({}, normalizedOptions), { isProduction: true }));
+         (0, devkit_1.writeJsonFile)((0, path_1.join)(normalizedOptions.outputPath, 'package.json'), packageJsonContent);

@@ -2,7 +2,17 @@
   "name": "@nestjs-template/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "postinstall": "electron-builder install-app-deps",
+    "nxe:build:frontend": "nx build phaser-game",
+    "nxe:build:backend": "nx build phaser-game-desktop",
+    "nxe:serve:frontend": "nx serve phaser-game",
+    "nxe:serve:backend": "nx serve phaser-game-desktop",
+    "nxe:test:frontend": "nx test phaser-game",
+    "nxe:test:backend": "nx test phaser-game-desktop",
+    "nxe:package:app": "nx run phaser-game-desktop:make --prepackgeOnly",
+    "nxe:make:app": "nx run phaser-game-desktop:make"
+  },
   "private": true,
   "dependencies": {
     "@nestjs/common": "^11.0.0",
@@ -31,6 +41,8 @@
     "@types/node": "^24.0.0",
     "@vitest/coverage-v8": "^4.1.10",
     "@vitest/ui": "^4.1.10",
+    "electron": "^43.2.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jest": "~30.3.0",
@@ -40,6 +52,7 @@
     "jsdom": "^30.0.1",
     "jsonc-eslint-parser": "^2.1.0",
     "nx": "23.1.0",
+    "nx-electron": "^22.0.0",
     "prettier": "~3.6.2",
     "swc-loader": "0.1.15",
     "ts-jest": "^29.4.0",
@@ -50,6 +63,12 @@
     "typescript-eslint": "^8.40.0",
     "unrun": "^0.3.1",
     "vite": "^8.0.0",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "nx-electron@22.0.0": "patches/nx-electron@22.0.0.patch"
+    }
   }
 }

@@ -58,5 +58,6 @@
       "unitTestRunner": "none",
       "e2eTestRunner": "none"
     }
-  }
+  },
+  "defaultProject": "phaser-game-desktop"
 }

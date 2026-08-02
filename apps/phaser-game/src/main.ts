@@ -1,42 +1,34 @@
-import { Boot } from './game/scenes/Boot';
-import { GameOver } from './game/scenes/GameOver';
-import { Game as MainGame } from './game/scenes/Game';
-import { MainMenu } from './game/scenes/MainMenu';
-import { Options } from './game/scenes/Options';
-import { AUTO, Game, Scale } from 'phaser';
-import { Preloader } from './game/scenes/Preloader';
+import SquirrelEvents from './app/events/squirrel.events';
+import ElectronEvents from './app/events/electron.events';
+// import UpdateEvents from './app/events/update.events';
+import { app, BrowserWindow } from 'electron';
+import App from './app/app';
 
-export const GAME_CONFIG = {
-    isDevelopment: true,
-    showStartPage: true
-};
+export default class Main {
+  static initialize() {
+    if (SquirrelEvents.handleEvents()) {
+      // squirrel event handled (except first run event) and app will exit in 1000ms, so don't do anything else
+      app.quit();
+    }
+  }
 
-//  Find out more information about the Game Config at:
-//  https://docs.phaser.io/api-documentation/typedef/types-core#gameconfig
-const config: Phaser.Types.Core.GameConfig = {
-    type: AUTO,
-    width: 1024,
-    height: 768,
-    parent: 'game-container',
-    backgroundColor: '#028af8',
-    scale: {
-        mode: Scale.RESIZE,
-        autoCenter: Scale.CENTER_BOTH
-    },
-    scene: [
-        Boot,
-        Preloader,
-        MainMenu,
-        Options,
-        MainGame,
-        GameOver
-    ]
-};
+  static bootstrapApp() {
+    App.main(app, BrowserWindow);
+  }
 
-const StartGame = (parent: string) => {
-    return new Game({ ...config, parent });
+  static bootstrapAppEvents() {
+    ElectronEvents.bootstrapElectronEvents();
+
+    // initialize auto updater service
+    if (!App.isDevelopmentMode()) {
+      // UpdateEvents.initAutoUpdateService();
+    }
+  }
 }
 
-export default StartGame;
+// handle setup events as quickly as possible
+Main.initialize();
 
-const game = StartGame('game-container');
+// bootstrap app
+Main.bootstrapApp();
+Main.bootstrapAppEvents();

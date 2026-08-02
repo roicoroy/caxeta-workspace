@@ -1,17 +1,120 @@
 {
   "name": "phaser-game",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "application",
   "sourceRoot": "apps/phaser-game/src",
-  "tags": [],
-  "// targets": "to see all targets run: nx show project phaser-game --web",
+  "projectType": "application",
   "targets": {
-    "test": {
+    "build-electron": {
+      "executor": "nx-electron:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/phaser-game",
+        "main": "apps/phaser-game/src/main.ts",
+        "tsConfig": "apps/phaser-game/tsconfig.app.json",
+        "assets": [
+          "apps/phaser-game/src/assets",
+          {
+            "input": "apps/phaser-game",
+            "glob": "package.json",
+            "output": "/"
+          }
+        ]
+      },
+      "configurations": {
+        "production": {
+          "optimization": true,
+          "extractLicenses": true,
+          "inspect": false,
+          "fileReplacements": [
+            {
+              "replace": "apps/phaser-game/src/environments/environment.ts",
+              "with": "apps/phaser-game/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve-electron": {
+      "executor": "nx-electron:execute",
+      "options": {
+        "buildTarget": "phaser-game:build-electron"
+      }
+    },
+    "build-game": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/phaser-game/game",
+        "configFile": "apps/phaser-game/game/vite.config.mts"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve-game": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "phaser-game:build-game"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "phaser-game:build-game:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "phaser-game:build-game:production",
+          "hmr": false
+        }
+      }
+    },
+    "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "vitest run",
-        "cwd": "apps/phaser-game"
+        "commands": [
+          "nx run phaser-game:serve-game",
+          "nx run phaser-game:serve-electron"
+        ],
+        "parallel": true
       }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx run phaser-game:build-game:production",
+          "nx run phaser-game:build-electron:production"
+        ],
+        "parallel": true
+      }
+    },
+    "package": {
+      "executor": "nx-electron:package",
+      "options": {
+        "name": "phaser-game",
+        "frontendProject": "phaser-game",
+        "sourcePath": "dist/apps",
+        "outputPath": "dist/packages",
+        "prepackageOnly": true
+      }
+    },
+    "make": {
+      "executor": "nx-electron:make",
+      "options": {
+        "name": "phaser-game",
+        "frontendProject": "phaser-game",
+        "sourcePath": "dist/apps",
+        "outputPath": "dist/executables"
+      }
+    },
+    "lint": {
+      "command": "eslint apps/phaser-game/**/*.ts"
     }
   }
 }

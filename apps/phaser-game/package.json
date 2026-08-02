@@ -1,8 +1,7 @@
 {
   "name": "phaser-game",
-  "version": "0.0.0",
-  "private": true,
-  "dependencies": {
-    "phaser": "^4.2.1"
-  }
+  "version": "1.0.0",
+  "main": "main.js",
+  "author": "",
+  "license": "MIT"
 }

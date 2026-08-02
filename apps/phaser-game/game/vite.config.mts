@@ -20,7 +20,7 @@ export default defineConfig(() => ({
   //   plugins: () => [ nxViteTsPaths() ],
   // },
   build: {
-    outDir: '../../dist/apps/phaser-game',
+    outDir: '../../../dist/apps/phaser-game/game',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {

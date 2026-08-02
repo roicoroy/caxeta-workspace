@@ -4,14 +4,11 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    "nxe:build:frontend": "nx build phaser-game",
-    "nxe:build:backend": "nx build phaser-game-desktop",
-    "nxe:serve:frontend": "nx serve phaser-game",
-    "nxe:serve:backend": "nx serve phaser-game-desktop",
-    "nxe:test:frontend": "nx test phaser-game",
-    "nxe:test:backend": "nx test phaser-game-desktop",
-    "nxe:package:app": "nx run phaser-game-desktop:make --prepackgeOnly",
-    "nxe:make:app": "nx run phaser-game-desktop:make"
+    "nxe:build:app": "nx build phaser-game",
+    "nxe:serve:app": "nx serve phaser-game",
+    "nxe:test:app": "nx test phaser-game",
+    "nxe:package:app": "nx run phaser-game:make --prepackageOnly",
+    "nxe:make:app": "nx run phaser-game:make"
   },
   "private": true,
   "dependencies": {
@@ -19,6 +16,7 @@
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "axios": "^1.6.0",
+    "phaser": "^4.2.1",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.0"
   },

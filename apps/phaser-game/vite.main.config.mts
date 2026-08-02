@@ -10,9 +10,9 @@ let electronProcess: ChildProcess | null = null;
 
 export default defineConfig(({ mode }) => {
   return {
-    root: __dirname,
+    root: import.meta.dirname,
     build: {
-      outDir: '../../dist/apps/phaser-game',
+      outDir: 'dist/electron',
       emptyOutDir: false,
       lib: {
         entry: 'src-electron/main.ts',
@@ -67,7 +67,7 @@ export default defineConfig(({ mode }) => {
             if (electronProcess) {
               electronProcess.kill('SIGTERM');
             }
-            const mainPath = join(__dirname, '../../dist/apps/phaser-game/main.js');
+            const mainPath = join(__dirname, '../../dist/electron/main.js');
             electronProcess = spawn(electronPath as any, [mainPath], {
               stdio: 'inherit'
             });

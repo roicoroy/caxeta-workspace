@@ -1,26 +1,35 @@
 /// <reference types='vitest' />
 import { defineConfig } from 'vite';
-import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
-import { nxCopyAssetsPlugin } from '@nx/vite/plugins/nx-copy-assets.plugin';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig(() => ({
   root: import.meta.dirname,
-  cacheDir: '../../node_modules/.vite/apps/phaser-game',
+  cacheDir: '../../../node_modules/.vite/apps/phaser-game',
   server: {
     port: 4200,
-    host: 'localhost',
+    host: true,
+    watch: {
+      usePolling: true,
+    },
   },
   preview: {
     port: 4300,
     host: 'localhost',
   },
-  plugins: [nxViteTsPaths(), nxCopyAssetsPlugin(['*.md'])],
-  // Uncomment this if you are using workers.
-  // worker: {
-  //   plugins: () => [ nxViteTsPaths() ],
-  // },
+  plugins: [
+    tsconfigPaths(), 
+    {
+      name: 'phaser-full-reload',
+      handleHotUpdate({ file, server }) {
+        if (file.endsWith('.ts')) {
+          server.ws.send({ type: 'full-reload' });
+          return [];
+        }
+      }
+    }
+  ],
   build: {
-    outDir: '../../../dist/apps/phaser-game/game',
+    outDir: '../dist/game',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {

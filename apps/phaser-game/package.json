@@ -2,7 +2,7 @@
   "name": "phaser-game",
   "version": "1.0.0",
   "description": "Phaser Game Application",
-  "main": "main.js",
+  "main": "index.js",
   "author": "Ricardo Bento",
   "license": "MIT"
 }

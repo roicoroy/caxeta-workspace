@@ -4,7 +4,7 @@ export class MainMenu extends Scene {
     background: GameObjects.Image;
     logo: GameObjects.Image;
     title: GameObjects.Text;
-    
+
     private startGameBtn: { bg: GameObjects.Rectangle, text: GameObjects.Text };
     private optionsBtn: { bg: GameObjects.Rectangle, text: GameObjects.Text };
 
@@ -18,7 +18,7 @@ export class MainMenu extends Scene {
         this.logo = this.add.image(512, 300, 'logo');
 
         this.title = this.add.text(512, 460, 'Main Menu', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+            fontFamily: 'Arial Black', fontSize: 38, color: '#ffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         }).setOrigin(0.5);
@@ -69,7 +69,7 @@ export class MainMenu extends Scene {
         // Hover effects
         btnBg.on('pointerover', () => btnBg.setFillStyle(0x333333, 0.8));
         btnBg.on('pointerout', () => btnBg.setFillStyle(0x000000, 0.6));
-        
+
         // Click
         btnBg.on('pointerdown', () => {
             btnBg.setFillStyle(0x555555, 1);

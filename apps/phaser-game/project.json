@@ -9,7 +9,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/phaser-game",
+        "outputPath": "dist/electron",
         "configFile": "apps/phaser-game/vite.main.config.mts"
       },
       "configurations": {
@@ -32,7 +32,7 @@
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
-        "outputPath": "dist/apps/phaser-game/game",
+        "outputPath": "../dist/game",
         "configFile": "apps/phaser-game/game/vite.config.mts"
       },
       "configurations": {
@@ -84,9 +84,9 @@
     "package": {
       "executor": "nx-electron:package",
       "options": {
-        "name": "phaser-game",
-        "frontendProject": "phaser-game",
-        "sourcePath": "dist/apps",
+        "name": "electron",
+        "frontendProject": "game",
+        "sourcePath": "dist",
         "outputPath": "dist/packages",
         "prepackageOnly": true
       }
@@ -94,9 +94,9 @@
     "make": {
       "executor": "nx-electron:make",
       "options": {
-        "name": "phaser-game",
-        "frontendProject": "phaser-game",
-        "sourcePath": "dist/apps",
+        "name": "electron",
+        "frontendProject": "game",
+        "sourcePath": "dist",
         "outputPath": "dist/executables"
       }
     },

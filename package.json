@@ -4,20 +4,17 @@
   "license": "MIT",
   "scripts": {
     "postinstall": "electron-builder install-app-deps",
-    
     "dev:web": "nx run phaser-game:serve-game",
     "dev:electron": "nx serve phaser-game",
-    
     "build:web": "nx run phaser-game:build-game",
     "build:electron": "nx build phaser-game",
-    
     "package:electron": "nx run phaser-game:make --prepackageOnly",
     "make:electron": "nx run phaser-game:make",
-    
     "cap:sync": "nx run phaser-game:build-game:production && cd apps/phaser-game && npx cap sync",
     "cap:ios": "pnpm run cap:sync && cd apps/phaser-game && npx cap open ios",
     "cap:android": "pnpm run cap:sync && cd apps/phaser-game && npx cap open android",
-    
+    "cap:dev:ios": "cd apps/phaser-game && npx cap run ios -l --port 4200",
+    "cap:dev:android": "cd apps/phaser-game && npx cap run android -l --port 4200",
     "test": "nx test phaser-game"
   },
   "private": true,
@@ -76,6 +73,7 @@
     "unrun": "^0.3.1",
     "vite": "^8.0.0",
     "vite-plugin-static-copy": "^4.1.1",
+    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^4.1.10",
     "webpack-node-externals": "^3.0.0"
   },

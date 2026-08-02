@@ -5,6 +5,13 @@
     "types": ["node"],
     "ignoreDeprecations": "6.0"
   },
-  "exclude": ["**/*.spec.ts", "**/*.test.ts"],
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "jest.config.ts",
+    "jest.config.cts",
+    "src-electron/**/*.spec.ts",
+    "src-electron/**/*.test.ts"
+  ],
   "include": ["**/*.ts"]
 }

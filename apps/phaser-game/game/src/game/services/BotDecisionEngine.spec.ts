@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+// Removed vitest import to use Jest globals
 import { BotDecisionEngine } from './BotDecisionEngine';
 import { MeldValidator } from './MeldValidator';
 import { Card, Suit } from '../models/Card';

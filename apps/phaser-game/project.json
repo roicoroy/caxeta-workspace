@@ -1,43 +1,30 @@
 {
   "name": "phaser-game",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/phaser-game/src",
+  "sourceRoot": "apps/phaser-game/src-electron",
   "projectType": "application",
   "targets": {
     "build-electron": {
-      "executor": "nx-electron:build",
+      "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/phaser-game",
-        "main": "apps/phaser-game/src/main.ts",
-        "tsConfig": "apps/phaser-game/tsconfig.app.json",
-        "assets": [
-          "apps/phaser-game/src/assets",
-          {
-            "input": "apps/phaser-game",
-            "glob": "package.json",
-            "output": "/"
-          }
-        ]
+        "configFile": "apps/phaser-game/vite.main.config.mts"
       },
       "configurations": {
+        "development": {
+          "mode": "development"
+        },
         "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/phaser-game/src/environments/environment.ts",
-              "with": "apps/phaser-game/src/environments/environment.prod.ts"
-            }
-          ]
+          "mode": "production"
         }
       }
     },
     "serve-electron": {
-      "executor": "nx-electron:execute",
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "phaser-game:build-electron"
+        "command": "nx run phaser-game:build-electron:development"
       }
     },
     "build-game": {

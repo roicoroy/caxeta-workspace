@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "module": "commonjs",
+    "moduleResolution": "bundler",
+    "types": [
+      "jest",
+      "node"
+    ]
+  },
+  "include": [
+    "jest.config.ts",
+    "jest.config.cts",
+    "src-electron/**/*.test.ts",
+    "src-electron/**/*.spec.ts",
+    "src-electron/**/*.d.ts",
+    "game/src/**/*.test.ts",
+    "game/src/**/*.spec.ts",
+    "game/src/**/*.d.ts"
+  ]
+}

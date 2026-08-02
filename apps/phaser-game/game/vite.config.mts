@@ -17,7 +17,7 @@ export default defineConfig(() => ({
     host: 'localhost',
   },
   plugins: [
-    tsconfigPaths(), 
+    tsconfigPaths(),
     {
       name: 'phaser-full-reload',
       handleHotUpdate({ file, server }) {

@@ -4,10 +4,11 @@ import { AppService } from './app.service';
 import { HealthController } from './health.controller';
 import { TodosController } from './todos.controller';
 import { TodosService } from './todos.service';
+import { GameGateway } from './game.gateway';
 
 @Module({
   imports: [],
   controllers: [AppController, HealthController, TodosController],
-  providers: [AppService, TodosService],
+  providers: [AppService, TodosService, GameGateway],
 })
 export class AppModule {}

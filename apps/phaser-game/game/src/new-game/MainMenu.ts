@@ -27,7 +27,7 @@ export class NewMainMenu extends Scene {
         btnText.on('pointerout', () => btnText.setColor('#ffffff'));
 
         btnText.on('pointerdown', () => {
-            this.scene.start('Game');
+            this.scene.start('TodoScene');
         });
     }
 }

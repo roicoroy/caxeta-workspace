@@ -12,6 +12,7 @@ import { NewGame } from './new-game/Game';
 import { NewMainMenu } from './new-game/MainMenu';
 import { NewGameOptions } from './new-game/Options';
 import { NewaGamePreloader } from './new-game/Preloader';
+import { TodoScene } from './new-game/TodoScene';
 
 export const GAME_CONFIG = {
     isDevelopment: true,
@@ -27,7 +28,8 @@ const scenesNewGame = [
     NewMainMenu,
     NewGameOptions,
     NewGame,
-    NewGameOver
+    NewGameOver,
+    TodoScene
 ];
 
 const scenesOldGame = [
@@ -57,5 +59,8 @@ const StartGame = (parent: string) => {
 }
 
 export default StartGame;
+
+// Initialize WebSocket connection
+import './socket';
 
 const game = StartGame('game-container');

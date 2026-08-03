@@ -16,14 +16,39 @@ export class TodoScene extends Scene {
             align: 'center'
         }).setOrigin(0.5);
 
-        const addButton = this.add.text(512, 120, '[+ Add Todo]', {
-            fontFamily: 'Arial', fontSize: '28px', color: '#00ff00',
-            backgroundColor: '#000000'
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        const formHtml = `
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <input type="text" name="todoInput" placeholder="Add a new task..." 
+                       style="font-size: 20px; padding: 8px; width: 300px; border: 2px solid #333; border-radius: 4px; outline: none;">
+                <button name="addBtn" 
+                        style="font-size: 20px; padding: 8px 16px; background-color: #00ff00; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Add
+                </button>
+            </div>
+        `;
 
-        addButton.on('pointerdown', () => {
-            const randomTask = `New Task ${Math.floor(Math.random() * 1000)}`;
-            socket.emit('addTodo', { title: randomTask });
+        const form = this.add.dom(512, 120).createFromHTML(formHtml);
+        form.addListener('click');
+        form.addListener('keydown');
+
+        form.on('click', (event: any) => {
+            if (event.target.name === 'addBtn') {
+                const input = form.getChildByName('todoInput') as HTMLInputElement;
+                if (input.value.trim() !== '') {
+                    socket.emit('addTodo', { title: input.value.trim() });
+                    input.value = '';
+                }
+            }
+        });
+
+        form.on('keydown', (event: any) => {
+            if (event.key === 'Enter') {
+                const input = form.getChildByName('todoInput') as HTMLInputElement;
+                if (input.value.trim() !== '') {
+                    socket.emit('addTodo', { title: input.value.trim() });
+                    input.value = '';
+                }
+            }
         });
 
         const backButton = this.add.text(512, 700, '[Back to Menu]', {

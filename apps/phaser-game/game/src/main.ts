@@ -51,6 +51,9 @@ const config: Phaser.Types.Core.GameConfig = {
         mode: Scale.RESIZE,
         autoCenter: Scale.CENTER_BOTH
     },
+    dom: {
+        createContainer: true
+    },
     scene: GAME_CONFIG.isNewGame ? scenesNewGame : scenesOldGame
 };
 

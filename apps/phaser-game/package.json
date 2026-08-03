@@ -4,5 +4,8 @@
   "description": "Phaser Game Application",
   "main": "index.js",
   "author": "Ricardo Bento",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "electron-devtools-installer": "^4.0.0"
+  }
 }

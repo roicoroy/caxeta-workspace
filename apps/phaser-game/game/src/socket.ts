@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client';
+import { useGameStore } from './store/gameStore';
 
 // Change this URL to match your backend port if different.
 // The default NestJS setup typically runs on port 3000.
@@ -10,6 +11,7 @@ export const socket = io(URL, {
 
 socket.on('connect', () => {
   console.log('Connected to server via WebSocket');
+  useGameStore.getState().setConnectionStatus(true);
   
   // Send a test ping event
   socket.emit('ping', { test: true }, (response: any) => {
@@ -19,4 +21,11 @@ socket.on('connect', () => {
 
 socket.on('disconnect', () => {
   console.log('Disconnected from server');
+  useGameStore.getState().setConnectionStatus(false);
 });
+
+// Example of server acting as the source of truth
+socket.on('gameStateUpdate', (data: any) => {
+  useGameStore.getState().setServerState(data);
+});
+

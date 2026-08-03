@@ -61,9 +61,12 @@ export default class App {
   }
 
   private static initMainWindow() {
+    const isDev = App.isDevelopmentMode();
     const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
-    const width = Math.min(1280, workAreaSize.width || 1280);
-    const height = Math.min(720, workAreaSize.height || 720);
+    // Make window wider in dev mode to fit devtools alongside the portrait game
+    const defaultWidth = isDev ? 1280 : 768;
+    const width = Math.min(defaultWidth, workAreaSize.width || defaultWidth);
+    const height = Math.min(1024, workAreaSize.height || 1024);
 
     // Create the browser window.
     App.mainWindow = new BrowserWindow({
@@ -73,7 +76,6 @@ export default class App {
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: false,
-        preload: join(__dirname, 'main.preload.js'),
       },
     });
     App.mainWindow.setMenu(null);
@@ -82,6 +84,15 @@ export default class App {
     // if main window is ready to show, close the splash window and show the main window
     App.mainWindow.once('ready-to-show', () => {
       App.mainWindow!.show();
+      
+      if (App.isDevelopmentMode()) {
+        import('electron-devtools-installer').then(({ default: installExtension, REDUX_DEVTOOLS }) => {
+            installExtension(REDUX_DEVTOOLS)
+                .then((name) => console.log(`Added Extension:  ${name}`))
+                .catch((err) => console.log('An error occurred: ', err));
+        });
+        App.mainWindow!.webContents.openDevTools({ mode: 'right' });
+      }
     });
 
     // handle all external redirects in a new browser window

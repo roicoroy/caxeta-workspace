@@ -1,8 +1,8 @@
 import { Scene } from 'phaser';
 import { socket } from '../socket';
+import { useGameStore } from '../store/gameStore';
 
 export class TodoScene extends Scene {
-    private todos: any[] = [];
     private textObjects: Phaser.GameObjects.Text[] = [];
 
     constructor() {
@@ -10,11 +10,16 @@ export class TodoScene extends Scene {
     }
 
     create() {
-        this.add.text(512, 50, 'Real-time Todos (WebSockets)', {
+        // Add the custom background (assuming 768x1024 window)
+        // const bg = this.add.image(384, 512, 'tableBackground');
+        // // Scale it down or up to cover the 768x1024 screen if it's too big/small
+        // bg.setDisplaySize(768, 1024);
+
+        this.add.text(384, 50, 'Real-time Todos (WebSockets)', {
             fontFamily: 'Arial Black', fontSize: '38px', color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setDepth(1);
 
         const formHtml = `
             <div style="display: flex; gap: 10px; align-items: center;">
@@ -27,7 +32,7 @@ export class TodoScene extends Scene {
             </div>
         `;
 
-        const form = this.add.dom(512, 120).createFromHTML(formHtml);
+        const form = this.add.dom(384, 120).createFromHTML(formHtml);
         form.addListener('click');
         form.addListener('keydown');
 
@@ -51,10 +56,10 @@ export class TodoScene extends Scene {
             }
         });
 
-        const backButton = this.add.text(512, 700, '[Back to Menu]', {
+        const backButton = this.add.text(384, 900, '[Back to Menu]', {
             fontFamily: 'Arial', fontSize: '24px', color: '#ff0000',
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
-        
+
         backButton.on('pointerdown', () => {
             this.scene.start('MainMenu');
         });
@@ -62,14 +67,19 @@ export class TodoScene extends Scene {
         // Request initial todos (server will reply by emitting 'todosUpdated')
         socket.emit('getTodos');
 
-        // Listen for updates
-        socket.on('todosUpdated', (response: { data: any[], total: number }) => {
-            this.updateTodos(response.data);
+        // Subscribe to Zustand store changes to render the UI
+        useGameStore.subscribe((state, prevState) => {
+            if (state.todos !== prevState.todos) {
+                this.renderTodos();
+            }
         });
-    }
 
-    updateTodos(todos: any[]) {
-        this.todos = todos;
+        // Listen for updates and sync them into Zustand
+        socket.on('todosUpdated', (response: { data: any[], total: number }) => {
+            useGameStore.getState().setServerState({ todos: response.data });
+        });
+
+        // Initial render if there are already cached todos
         this.renderTodos();
     }
 
@@ -79,20 +89,20 @@ export class TodoScene extends Scene {
         this.textObjects = [];
 
         let startY = 200;
-        
-        this.todos.forEach(todo => {
+
+        const todos = useGameStore.getState().todos;
+
+        todos.forEach(todo => {
             const color = todo.completed ? '#aaaaaa' : '#ffffff';
             const displayTitle = todo.completed ? `[X] ${todo.title}` : `[ ] ${todo.title}`;
-            
+
             const textObj = this.add.text(200, startY, displayTitle, {
                 fontFamily: 'Arial', fontSize: '24px', color: color
-            }).setInteractive({ useHandCursor: !todo.completed });
+            }).setInteractive({ useHandCursor: true });
 
-            if (!todo.completed) {
-                textObj.on('pointerdown', () => {
-                    socket.emit('completeTodo', { id: todo.id, completed: true });
-                });
-            }
+            textObj.on('pointerdown', () => {
+                socket.emit('completeTodo', { id: todo.id, completed: !todo.completed });
+            });
             this.textObjects.push(textObj);
 
             // Add delete button next to it

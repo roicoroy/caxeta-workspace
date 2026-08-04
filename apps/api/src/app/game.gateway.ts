@@ -43,42 +43,46 @@ export class GameGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage('getTodos')
-  handleGetTodos(@ConnectedSocket() client: Socket) {
+  async handleGetTodos(@ConnectedSocket() client: Socket) {
     try {
-      client.emit('todosUpdated', this.todosService.findAll());
+      const todos = await this.todosService.findAll();
+      client.emit('todosUpdated', todos);
     } catch (e) {
       this.logger.error('Error in handleGetTodos', e);
     }
   }
 
   @SubscribeMessage('addTodo')
-  handleAddTodo(@MessageBody() data: { title: string }) {
+  async handleAddTodo(@MessageBody() data: { title: string }) {
     try {
       this.logger.log(`Adding todo: ${data?.title}`);
-      this.todosService.create({ title: data.title });
-      this.server.emit('todosUpdated', this.todosService.findAll());
+      await this.todosService.create({ title: data.title });
+      const todos = await this.todosService.findAll();
+      this.server.emit('todosUpdated', todos);
     } catch (e) {
       this.logger.error('Error in handleAddTodo', e);
     }
   }
 
   @SubscribeMessage('completeTodo')
-  handleCompleteTodo(@MessageBody() data: { id: number, completed: boolean }) {
+  async handleCompleteTodo(@MessageBody() data: { id: number, completed: boolean }) {
     try {
       this.logger.log(`Updating todo ${data?.id}: completed=${data?.completed}`);
-      this.todosService.update(data.id, { completed: data.completed });
-      this.server.emit('todosUpdated', this.todosService.findAll());
+      await this.todosService.update(data.id, { completed: data.completed });
+      const todos = await this.todosService.findAll();
+      this.server.emit('todosUpdated', todos);
     } catch (e) {
       this.logger.error('Error in handleCompleteTodo', e);
     }
   }
 
   @SubscribeMessage('deleteTodo')
-  handleDeleteTodo(@MessageBody() data: { id: number }) {
+  async handleDeleteTodo(@MessageBody() data: { id: number }) {
     try {
       this.logger.log(`Deleting todo ${data?.id}`);
-      this.todosService.remove(data.id);
-      this.server.emit('todosUpdated', this.todosService.findAll());
+      await this.todosService.remove(data.id);
+      const todos = await this.todosService.findAll();
+      this.server.emit('todosUpdated', todos);
     } catch (e) {
       this.logger.error('Error in handleDeleteTodo', e);
     }

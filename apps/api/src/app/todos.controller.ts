@@ -22,31 +22,31 @@ export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
   @Get()
-  findAll(): TodoListResponse {
+  async findAll(): Promise<TodoListResponse> {
     return this.todosService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Todo {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Todo> {
     return this.todosService.findOne(id);
   }
 
   @Post()
-  create(@Body() dto: CreateTodoDto): Todo {
+  async create(@Body() dto: CreateTodoDto): Promise<Todo> {
     return this.todosService.create(dto);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: UpdateTodoDto,
-  ): Todo {
+  ): Promise<Todo> {
     return this.todosService.update(id, dto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  remove(@Param('id', ParseIntPipe) id: number): void {
-    this.todosService.remove(id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    await this.todosService.remove(id);
   }
 }

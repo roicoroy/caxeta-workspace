@@ -4,6 +4,8 @@ import ElectronEvents from './app/events/electron.events';
 import { app, BrowserWindow } from 'electron';
 import App from './app/app';
 
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
 export default class Main {
   static initialize() {
     if (SquirrelEvents.handleEvents()) {

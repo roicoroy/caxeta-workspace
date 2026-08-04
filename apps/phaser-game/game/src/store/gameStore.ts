@@ -1,5 +1,5 @@
 import { createStore } from 'zustand/vanilla';
-import { persist, createJSONStorage, devtools } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 // Define the shape of our server-provided state
 export interface GameStateData {
@@ -20,35 +20,32 @@ interface GameStore extends GameStateData {
 }
 
 export const useGameStore = createStore<GameStore>()(
-  devtools(
-    persist(
-      (set) => ({
-        playerScore: 0,
-        currentLevel: 1,
-        inventory: [],
-        todos: [], // <--- INITIALIZED TODOS
-        isServerConnected: false,
+  persist(
+    (set) => ({
+      playerScore: 0,
+      currentLevel: 1,
+      inventory: [],
+      todos: [], // <--- INITIALIZED TODOS
+      isServerConnected: false,
 
-        // Directly apply full or partial state updates from the server
-        setServerState: (data) => set((state) => ({ ...state, ...data })),
+      // Directly apply full or partial state updates from the server
+      setServerState: (data) => set((state) => ({ ...state, ...data })),
 
-        setConnectionStatus: (isConnected) => set({ isServerConnected: isConnected }),
+      setConnectionStatus: (isConnected) => set({ isServerConnected: isConnected }),
 
-        // Example action to predict server behavior before confirmation
-        optimisticScoreUpdate: (points) => set((state) => ({ playerScore: state.playerScore + points })),
+      // Example action to predict server behavior before confirmation
+      optimisticScoreUpdate: (points) => set((state) => ({ playerScore: state.playerScore + points })),
+    }),
+    {
+      name: 'phaser-game-storage', // name of the item in the storage (must be unique)
+      storage: createJSONStorage(() => localStorage),
+      // We don't want to persist connection status as it's session-based
+      partialize: (state) => ({
+        playerScore: state.playerScore,
+        currentLevel: state.currentLevel,
+        inventory: state.inventory,
+        todos: state.todos, // <--- PERSIST TODOS
       }),
-      {
-        name: 'phaser-game-storage', // name of the item in the storage (must be unique)
-        storage: createJSONStorage(() => localStorage),
-        // We don't want to persist connection status as it's session-based
-        partialize: (state) => ({
-          playerScore: state.playerScore,
-          currentLevel: state.currentLevel,
-          inventory: state.inventory,
-          todos: state.todos, // <--- PERSIST TODOS
-        }),
-      }
-    ),
-    { name: 'PhaserGameState' }
+    }
   )
 );
